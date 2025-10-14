@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediksi Obat {{ drug_name }} - Apotek Ash-Shihah</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+        .navbar-custom {
+            background-color: #ffffff;
+            border-bottom: 3px solid #17a2b8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        .navbar-custom .navbar-brand {
+            color: #2c3e50;
+        }
+        .navbar-brand {
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+        .btn-primary:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+        }
+        .btn-outline-tosca {
+            color: #17a2b8;
+            border-color: #17a2b8;
+        }
+        .btn-outline-tosca:hover {
+            color: #fff;
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+        .nav-pills .nav-link {
+            color: #17a2b8;
+        }
+        .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 420px; 
+        }
+
+        .summary-card-styled {
+            background: linear-gradient(135deg, #e8f9fa 0%, #ffffff 100%);
+            border: 1px solid #d1eef2;
+            transition: all 0.3s ease-in-out;
+        }
+        .summary-card-styled:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08) !important;
+        }
+        .summary-card-styled .card-body {
+            padding: 1.5rem;
+        }
+        .icon-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(23, 162, 184, 0.1);
+            color: #17a2b8;
+        }
+        .kpi-title {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 0;
+            line-height: 1.2;
+        }
+        .kpi-value {
+            font-size: 2.5rem;
+            color: #1e293b;
+            line-height: 1.2;
+            margin-bottom: 0;
+        }
+        .kpi-unit {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #64748b;
+            margin-bottom: 0;
+        }
+        
+        /* <<< AWAL CSS BARU UNTUK TABEL & SCROLLBAR >>> */
+        .table-container {
+            overflow-y: auto;
+            max-height: 310px; /* Sedikit lebih tinggi */
+        }
+        /* Custom Scrollbar Styling */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Modern Table Styling */
+        .table-modern {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+        .table-modern thead th {
+            background-color: #f8fafc;
+            border-bottom: 2px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.75rem 1rem;
+            position: sticky;
+            top: 0;
+        }
+        .table-modern tbody tr {
+            transition: background-color 0.2s ease-in-out;
+        }
+        .table-modern tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        .table-modern tbody td {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 0.85rem 1rem;
+            vertical-align: middle;
+        }
+        .table-modern tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .table-modern .fw-bold {
+            font-weight: 600 !important;
+            color: #1e293b;
+        }
+        /* <<< AKHIR CSS BARU >>> */
+
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                Apotek Ash-Shihah
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-tosca d-none d-lg-inline-block">
+                Kembali
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Prediksi Obat: <strong>{{ drug_name }}</strong></h1>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary d-lg-none">&laquo; Kembali</a>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body d-flex flex-column">
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="pills-forecast-tab" data-bs-toggle="pill" data-bs-target="#pills-forecast" type="button" role="tab" aria-controls="pills-forecast" aria-selected="true">
+                                    Prediksi Bulan Ini
+                                </button>
+                            </li>
+                             <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-performance-tab" data-bs-toggle="pill" data-bs-target="#pills-performance" type="button" role="tab" aria-controls="pills-performance" aria-selected="false">
+                                    Prediksi Keseluruhan
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-monthly-tab" data-bs-toggle="pill" data-bs-target="#pills-monthly" type="button" role="tab" aria-controls="pills-monthly" aria-selected="false">
+                                    Data Bulanan
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content flex-grow-1" id="pills-tabContent">
+                            <div class="tab-pane fade show active h-100" id="pills-forecast" role="tabpanel" aria-labelledby="pills-forecast-tab">
+                                <div class="chart-container">
+                                    <canvas id="forecastChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade h-100" id="pills-performance" role="tabpanel" aria-labelledby="pills-performance-tab">
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade h-100" id="pills-monthly" role="tabpanel" aria-labelledby="pills-monthly-tab">
+                                <div class="chart-container">
+                                    <canvas id="monthlyChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4 summary-card-styled">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="icon-wrapper">
+                                <i class="fas fa-chart-line fa-2x"></i>
+                            </div>
+                            <div class="ms-3">
+                                <h6 class="kpi-title text-uppercase">Total Prediksi ({{ prediction_period }})</h6>
+                                <h2 class="kpi-value fw-bold">{{ "{:,.0f}".format(total_prediction).replace(",", ".") }}</h2>
+                                <p class="kpi-unit">Unit</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">Detail Prediksi Harian</h5>
+                        <div class="table-container">
+                            <table class="table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>Tanggal</th>
+                                        <th class="text-end">Prediksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in prediction_details %}
+                                    <tr>
+                                        <td>{{ item.tanggal }}</td>
+                                        <td class="text-end fw-bold">{{ item.prediksi }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">Grafik Riwayat Penjualan</h5>
+                            <div class="col-md-4">
+                               <input type="text" id="dateRangePicker" class="form-control" placeholder="Pilih rentang tanggal...">
+                            </div>
+                        </div>
+                        <div class="chart-container" style="height: 350px;">
+                             <canvas id="historicalChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="text-center mt-5 py-3 bg-light">
+        <p class="mb-0">&copy; 2025 Apotek Ash-Shihah</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        const drugId = "{{ drug_id }}";
+        const forecastData = {{ forecast_chart_data | tojson }};
+        const performanceData = {{ performance_chart_data | tojson }};
+        const monthlyData = {{ monthly_chart_data | tojson }};
+        const defaultDateRange = {{ default_date_range | tojson }};
+        
+        const animationConfig = {
+            duration: 1000,
+            easing: 'easeInOutQuad',
+        };
+        const originalLineChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            interaction: {
+                intersect: false,
+                mode: 'index',
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 12 },
+                    padding: 10,
+                    cornerRadius: 5,
+                }
+            },
+            scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: '#e9ecef' }, beginAtZero: true }
+            }
+        };
+
+        const modernLineChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            interaction: { intersect: false, mode: 'index' },
+            plugins: {
+                legend: { position: 'top', align: 'center', labels: { usePointStyle: true, boxWidth: 8, padding: 20, font: { family: "'Poppins', sans-serif" } } },
+                tooltip: {
+                    backgroundColor: '#2c3e50', titleFont: { weight: '600', size: 14, family: "'Poppins', sans-serif" },
+                    bodyFont: { weight: '500', family: "'Poppins', sans-serif" }, boxPadding: 8, cornerRadius: 8,
+                }
+            },
+            scales: {
+                x: { grid: { display: false }, border: { color: '#e2e8f0' } },
+                y: { grid: { color: '#e2e8f0', borderDash: [5, 5] }, border: { display: false }, beginAtZero: true }
+            }
+        };
+
+        const ctxForecast = document.getElementById('forecastChart').getContext('2d');
+        const forecastGradient = ctxForecast.createLinearGradient(0, 0, 0, 420);
+        forecastGradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+        forecastGradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+        
+        const forecastDatasets = [{
+            label: 'Prediksi Penjualan',
+            data: forecastData.data,
+            backgroundColor: forecastGradient,
+            borderColor: '#3b82f6',
+            borderWidth: 3,
+            pointRadius: 0,
+            pointHoverRadius: 5,
+            fill: true,
+            tension: 0.4
+        }];
+        
+        const historicalStyles = [
+            { color: '#56B8BB', gradient: ['rgba(86, 184, 187, 0.2)', 'rgba(86, 184, 187, 0)'] },
+            { color: '#3A969B', gradient: ['rgba(58, 150, 155, 0.2)', 'rgba(58, 150, 155, 0)'] },
+            { color: '#276E71', gradient: ['rgba(39, 110, 113, 0.2)', 'rgba(39, 110, 113, 0)'] }
+        ];
+
+        if (forecastData.historical_data && Array.isArray(forecastData.historical_data)) {
+            forecastData.historical_data.forEach((item, index) => {
+                if (index < historicalStyles.length) {
+                    const style = historicalStyles[index];
+                    const gradient = ctxForecast.createLinearGradient(0, 0, 0, 420);
+                    gradient.addColorStop(0, style.gradient[0]);
+                    gradient.addColorStop(1, style.gradient[1]);
+                    forecastDatasets.push({
+                        label: item.label,
+                        data: item.data,
+                        borderColor: style.color,
+                        backgroundColor: gradient,
+                        fill: true,
+                        borderWidth: 1.5,
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        tension: 0.4
+                    });
+                }
+            });
+        }
+        
+        new Chart(ctxForecast, { type: 'line', data: { labels: forecastData.labels, datasets: forecastDatasets }, options: modernLineChartOptions });
+
+        let performanceChart = null;
+        let monthlyChart = null;
+        const tabButtons = document.querySelectorAll('button[data-bs-toggle="pill"]');
+        tabButtons.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', (event) => {
+                const targetId = event.target.getAttribute('data-bs-target');
+
+                if (targetId === '#pills-performance' && !performanceChart) {
+                    const ctxPerformance = document.getElementById('performanceChart').getContext('2d');
+                    const fullLabels = [...performanceData.train_labels, ...performanceData.actual_labels];
+                    const trendMap = new Map(performanceData.trend_labels.map((label, i) => [label, performanceData.trend_data[i]]));
+                    const alignedTrendData = fullLabels.map(label => trendMap.get(label) || null);
+                    performanceChart = new Chart(ctxPerformance, {
+                        type: 'line',
+                        data: {
+                            labels: fullLabels,
+                            datasets: [
+                                { label: 'Tren Penjualan', data: alignedTrendData, borderColor: 'rgba(255, 159, 64, 1)', borderWidth: 2, pointRadius: 0, tension: 0.4, fill: false, borderDash: [10, 5], order: 1 },
+                                { label: 'Hasil Prediksi', data: [...Array(performanceData.train_labels.length).fill(null), ...performanceData.predicted_data], borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 2, pointRadius: 0, tension: 0.4, order: 2 },
+                                { label: 'Data Latih (Aktual)', data: [...performanceData.train_data, ...Array(performanceData.actual_labels.length).fill(null)], backgroundColor: 'rgba(75, 192, 192, 0.1)', borderColor: 'rgba(75, 192, 192, 1)', fill: true, borderWidth: 1, pointRadius: 0, tension: 0.4, order: 3 },
+                                { label: 'Data Uji (Aktual)', data: [...Array(performanceData.train_labels.length).fill(null), ...performanceData.actual_data], borderColor: 'rgba(54, 162, 255, 1)', borderWidth: 1, pointRadius: 0, tension: 0.4, order: 4 }
+                            ]
+                        },
+                        options: { 
+                            ...originalLineChartOptions, 
+                            plugins: {
+                                ...originalLineChartOptions.plugins,
+                                legend: {
+                                    ...originalLineChartOptions.plugins.legend,
+                                    labels: {
+                                        usePointStyle: true,
+                                        boxWidth: 8
+                                    }
+                                }
+                            },
+                            animation: { duration: 50, easing: 'linear', delay: 0 } 
+                        }
+                    });
+                } 
+                else if (targetId === '#pills-monthly' && !monthlyChart) {
+                    const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
+                    const monthlyGradient = ctxMonthly.createLinearGradient(0, 0, 0, 400);
+                    monthlyGradient.addColorStop(0, 'rgba(102, 255, 179, 0.7)');
+                    monthlyGradient.addColorStop(1, 'rgba(20, 195, 142, 0.7)');
+                    const monthlyHoverGradient = ctxMonthly.createLinearGradient(0, 0, 0, 400);
+                    monthlyHoverGradient.addColorStop(0, 'rgba(102, 255, 179, 1)');
+                    monthlyHoverGradient.addColorStop(1, 'rgba(20, 195, 142, 1)');
+                    monthlyChart = new Chart(ctxMonthly, {
+                        type: 'bar',
+                        data: {
+                            labels: monthlyData.labels,
+                            datasets: [{ label: 'Total Penjualan Bulanan', data: monthlyData.data, backgroundColor: monthlyGradient, hoverBackgroundColor: monthlyHoverGradient, borderWidth: 0, borderRadius: 8, borderSkipped: false }]
+                        },
+                        options: {
+                            maintainAspectRatio: false, responsive: true, animation: animationConfig,
+                            plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: 10, cornerRadius: 5 } },
+                            scales: {
+                                x: { grid: { display: false, drawBorder: false } },
+                                y: { grid: { color: '#e9ecef', drawBorder: false, borderDash: [5, 5] }, beginAtZero: true }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        
+        const ctxHistorical = document.getElementById('historicalChart').getContext('2d');
+        const historicalGradient = ctxHistorical.createLinearGradient(0, 0, 0, 350);
+        historicalGradient.addColorStop(0, 'rgba(102, 255, 179, 0.7)');
+        historicalGradient.addColorStop(1, 'rgba(20, 195, 142, 0.7)');
+        const historicalHoverGradient = ctxHistorical.createLinearGradient(0, 0, 0, 350);
+        historicalHoverGradient.addColorStop(0, 'rgba(102, 255, 179, 1)');
+        historicalHoverGradient.addColorStop(1, 'rgba(20, 195, 142, 1)');
+
+        let historicalChart = new Chart(ctxHistorical, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Penjualan Harian',
+                    data: [],
+                    backgroundColor: historicalGradient,
+                    hoverBackgroundColor: historicalHoverGradient,
+                    borderWidth: 0,
+                    borderRadius: 8,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                animation: animationConfig,
+                plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0, 0, 0, 0.7)', padding: 10, cornerRadius: 5 } },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: {
+                            callback: function(value, index, ticks) {
+                                const label = this.getLabelForValue(value);
+                                const dataValue = this.chart.data.datasets[0].data[index];
+                                return label + ` (${dataValue})`;
+                            }
+                        }
+                    },
+                    y: { grid: { color: '#e9ecef', drawBorder: false, borderDash: [5, 5] }, beginAtZero: true }
+                }
+            }
+        });
+        
+        async function updateHistoricalChart(startDate, endDate) {
+            const response = await fetch(`/historical_range_data/${drugId}?start=${startDate}&end=${endDate}`);
+            const newData = await response.json();
+            
+            historicalChart.data.labels = newData.labels;
+            historicalChart.data.datasets[0].data = newData.data;
+            historicalChart.update();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const datePicker = flatpickr("#dateRangePicker", {
+                mode: "range",
+                dateFormat: "Y-m-d",
+                defaultDate: [defaultDateRange.start, defaultDateRange.end],
+                onClose: function(selectedDates) {
+                    if (selectedDates.length === 2) {
+                        const startDate = selectedDates[0].toISOString().slice(0,10);
+                        const endDate = selectedDates[1].toISOString().slice(0,10);
+                        updateHistoricalChart(startDate, endDate);
+                    }
+                }
+            });
+            updateHistoricalChart(defaultDateRange.start, defaultDateRange.end);
+        });
+    </script>
+</body>
+</html>
